@@ -14,7 +14,6 @@ import componentize_py_async_support
 import wit_world
 from wit_world import exports
 from wit_world.imports.types import (
-    CallResponse,
     ComponentInfo,
     ContentPart,
     ListToolsResponse,
@@ -64,7 +63,7 @@ class ToolProvider(exports.ToolProvider):
             ],
         )
 
-    async def call_tool(self, config, call: ToolCall) -> CallResponse:
+    async def call_tool(self, config, call: ToolCall):
         writer, reader = wit_world.types_stream_event_stream()
 
         async def produce():
@@ -132,4 +131,4 @@ class ToolProvider(exports.ToolProvider):
                 ))])
 
         componentize_py_async_support.spawn(produce())
-        return CallResponse(metadata=[], body=reader)
+        return reader
