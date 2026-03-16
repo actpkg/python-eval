@@ -14,15 +14,12 @@ jobs:
         with:
           submodules: true
       - uses: astral-sh/setup-uv@v6
-      - uses: extractions/setup-just@v3
+      - uses: taiki-e/install-action@just
+      - uses: taiki-e/install-action@wasm-tools
       - uses: taiki-e/cache-cargo-install-action@v3
         with:
           tool: wasm-custom-section
-      - uses: taiki-e/cache-cargo-install-action@v3
-        with:
-          tool: wasm-tools
-      - name: Build
-        run: just build
+      - run: just build
       - uses: actions/upload-artifact@v7
         with:
           name: component.wasm
@@ -38,12 +35,8 @@ jobs:
         with:
           name: component.wasm
       - uses: actcore/act-cli/setup@main
+      - uses: taiki-e/install-action@just
       - uses: taiki-e/cache-cargo-install-action@v3
         with:
           tool: hurl
-      - name: Run e2e tests
-        run: |
-          act serve python-interpreter.wasm --listen "[::1]:3456" &
-          npx wait-on http://[::1]:3456/info
-          hurl --test --variable "port=3456" e2e/*.hurl
-          kill $!
+      - run: just test
