@@ -1,5 +1,5 @@
-GET {{host}}/info
+GET http://[::1]:{{port}}/info
 HTTP 200
 [Asserts]
-jsonpath "$.name" == "python-interpreter"
-jsonpath "$.version" isString
+jsonpath "$['std:name']" == "python-interpreter"
+jsonpath "$['std:version']" isString

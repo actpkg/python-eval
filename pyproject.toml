@@ -1,0 +1,15 @@
+[project]
+name = "python-interpreter"
+version = "0.1.0"
+description = "Executes arbitrary Python code"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "cbor2>=5.8.0",
+]
+
+[dependency-groups]
+dev = [
+    "componentize-py>=0.21.0",
+    "toml-cli>=0.7.0",
+]
