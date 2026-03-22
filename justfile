@@ -7,6 +7,12 @@ name := `uv run toml get --toml-path pyproject.toml project.name`
 version := `uv version --short`
 description := `uv run toml get --toml-path pyproject.toml project.description`
 
+init:
+    wit-deps
+
+setup: init
+    prek install
+
 build:
     uv run componentize-py -d wit -w component-world componentize app -o {{wasm}}
     wasm-tools metadata add --name "{{name}}" --version "{{version}}" {{wasm}} -o {{wasm}}
