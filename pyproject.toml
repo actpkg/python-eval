@@ -1,15 +1,17 @@
 [project]
-name = "python-interpreter"
+name = "python-eval"
 version = "0.1.0"
-description = "Executes arbitrary Python code"
-readme = "README.md"
+description = "Python interpreter"
 requires-python = ">=3.14"
 dependencies = [
-    "cbor2>=5.8.0",
+    "act-sdk>=0.1.0",
 ]
 
 [dependency-groups]
 dev = [
     "componentize-py>=0.21.0",
-    "toml-cli>=0.7.0",
+    "ruff>=0.15.8",
 ]
+
+[tool.uv.sources]
+act-sdk = { git = "https://github.com/actcore/act-sdk-py.git" }

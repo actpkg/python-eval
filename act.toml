@@ -1,0 +1,7 @@
+[std]
+name = "python-eval"
+version = "0.1.0"
+description = "Python interpreter"
+
+
+[std.capabilities."wasi:filesystem"]

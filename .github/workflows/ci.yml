@@ -14,15 +14,16 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - uses: moonrepo/setup-rust@v1
         with:
-          bins: just, wasm-tools, wasm-custom-section, wit-deps-cli
+          bins: wasm-tools, wasm-custom-section, wit-deps-cli
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: taiki-e/install-action@just
       - run: just init
       - run: just build
       - uses: actions/upload-artifact@v7
         with:
           name: component.wasm
-          path: python-interpreter.wasm
+          path: "*.wasm"
 
   e2e:
     name: E2E Test
@@ -33,12 +34,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: component.wasm
-      - uses: actcore/act-cli/setup@main
-      - uses: moonrepo/setup-rust@v1
-        with:
-          bins: just, hurl
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: taiki-e/install-action@just
       - run: just test
 
   lint:
@@ -49,3 +45,31 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: uv run ruff check
       - run: uv run ruff format --check
+
+  publish:
+    name: Publish
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [e2e, lint]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: component.wasm
+      - uses: oras-project/setup-oras@v1
+      - uses: taiki-e/install-action@just
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | oras login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Publish
+        id: publish
+        run: just publish
+      - name: Attest
+        if: steps.publish.outputs.digest != ''
+        uses: actions/attest@v4
+        with:
+          subject-name: ${{ steps.publish.outputs.image }}
+          subject-digest: ${{ steps.publish.outputs.digest }}
+          push-to-registry: true
