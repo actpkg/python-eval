@@ -60,7 +60,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: component.wasm
-      - uses: oras-project/setup-oras@v1
+      - uses: oras-project/setup-oras@v2
       - uses: taiki-e/install-action@just
       - run: echo ${{ secrets.GITHUB_TOKEN }} | oras login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Publish
