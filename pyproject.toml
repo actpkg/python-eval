@@ -10,7 +10,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "componentize-py>=0.21.0",
-    "ruff>=0.15.8",
+    "ruff>=0.15.10",
 ]
 
 [tool.uv.sources]
