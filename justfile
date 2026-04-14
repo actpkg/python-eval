@@ -15,9 +15,7 @@ setup: init
 
 build:
     uv run componentize-py -d wit -w component-world componentize app -o {{wasm}}
-    uv run python3 -c "import tomllib,cbor2,sys; sys.stdout.buffer.write(cbor2.dumps(tomllib.load(open('act.toml','rb'))))" | wasm-custom-section {{wasm}} add act:component
-    mv {{wasm}}.out {{wasm}}
-    uv run python3 -c "import tomllib; s=tomllib.load(open('act.toml','rb'))['std']; print(s['name']); print(s['version'])" | { read -r N; read -r V; wasm-tools metadata add --name "$N" --version "$V" {{wasm}} -o {{wasm}}; }
+    act-build pack {{wasm}}
 
 test:
     #!/usr/bin/env bash

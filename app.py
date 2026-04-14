@@ -5,152 +5,52 @@ Each call gets a fresh namespace for isolation.
 """
 
 import io
-import json
 import sys
 import traceback
 
-import cbor2
-import componentize_py_async_support
-import wit_world
-from wit_world import exports
-from wit_world.imports.types import (
-    LocalizedString_Plain,
-    ContentPart,
-    ListToolsResponse,
-    StreamEvent_Content,
-    StreamEvent_Error,
-    ToolCall,
-    ToolDefinition,
-    ToolError,
-)
-
-EXEC_SCHEMA = json.dumps(
-    {
-        "type": "object",
-        "properties": {
-            "code": {
-                "type": "string",
-                "description": "Python code to execute",
-            },
-        },
-        "required": ["code"],
-    }
-)
+from act_sdk import component, tool
 
 
-class ToolProvider(exports.ToolProvider):
-    async def get_metadata_schema(self, metadata):
-        return None
+@component
+class PythonEval:
+    @tool(description="Execute Python code and return stdout/stderr")
+    async def exec(self, code: str) -> str:
+        old_stdout, old_stderr = sys.stdout, sys.stderr
+        capture_out = io.StringIO()
+        capture_err = io.StringIO()
+        sys.stdout = capture_out
+        sys.stderr = capture_err
 
-    async def list_tools(self, metadata):
-        return ListToolsResponse(
-            metadata=[],
-            tools=[
-                ToolDefinition(
-                    name="exec",
-                    description=LocalizedString_Plain(
-                        value="Execute Python code and return stdout/stderr"
-                    ),
-                    parameters_schema=EXEC_SCHEMA,
-                    metadata=[],
-                ),
-            ],
-        )
-
-    async def call_tool(self, call: ToolCall):
-        writer, reader = wit_world.types_stream_event_stream()
-
-        async def produce():
+        result_value = None
+        error_text = None
+        try:
             try:
-                if call.name != "exec":
-                    await writer.write(
-                        [
-                            StreamEvent_Error(
-                                ToolError(
-                                    kind="std:not-found",
-                                    message=LocalizedString_Plain(
-                                        value=f"Unknown tool: {call.name}"
-                                    ),
-                                    metadata=[],
-                                )
-                            )
-                        ]
-                    )
-                    return
-
-                # Decode CBOR arguments
-                args = cbor2.loads(bytes(call.arguments))
-                code = args.get("code", "")
-
-                # Capture stdout and stderr
-                old_stdout, old_stderr = sys.stdout, sys.stderr
-                capture_out = io.StringIO()
-                capture_err = io.StringIO()
-                sys.stdout = capture_out
-                sys.stderr = capture_err
-
-                result_value = None
-                error_text = None
-                try:
-                    # Try eval first (expression), fall back to exec (statements)
-                    try:
-                        result_value = eval(
-                            compile(code, "<act>", "eval"),
-                            {"__builtins__": __builtins__},
-                        )
-                    except SyntaxError:
-                        exec(
-                            compile(code, "<act>", "exec"),
-                            {"__builtins__": __builtins__},
-                        )
-                except Exception:
-                    error_text = traceback.format_exc()
-                finally:
-                    sys.stdout = old_stdout
-                    sys.stderr = old_stderr
-
-                stdout_text = capture_out.getvalue()
-                stderr_text = capture_err.getvalue()
-
-                # Build output text
-                parts = []
-                if stdout_text:
-                    parts.append(stdout_text)
-                if result_value is not None:
-                    parts.append(repr(result_value))
-                if stderr_text:
-                    parts.append(f"[stderr]\n{stderr_text}")
-                if error_text:
-                    parts.append(f"[error]\n{error_text}")
-
-                output = "\n".join(parts) if parts else "(no output)"
-
-                await writer.write(
-                    [
-                        StreamEvent_Content(
-                            ContentPart(
-                                data=output.encode("utf-8"),
-                                mime_type="text/plain",
-                                metadata=[],
-                            )
-                        )
-                    ]
+                result_value = eval(
+                    compile(code, "<act>", "eval"),
+                    {"__builtins__": __builtins__},
                 )
-
-            except Exception:
-                await writer.write(
-                    [
-                        StreamEvent_Error(
-                            ToolError(
-                                kind="std:internal",
-                                message=LocalizedString_Plain(
-                                    value=traceback.format_exc()
-                                ),
-                                metadata=[],
-                            )
-                        )
-                    ]
+            except SyntaxError:
+                exec(
+                    compile(code, "<act>", "exec"),
+                    {"__builtins__": __builtins__},
                 )
+        except Exception:
+            error_text = traceback.format_exc()
+        finally:
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
 
-        componentize_py_async_support.spawn(produce())
-        return reader
+        stdout_text = capture_out.getvalue()
+        stderr_text = capture_err.getvalue()
+
+        parts = []
+        if stdout_text:
+            parts.append(stdout_text)
+        if result_value is not None:
+            parts.append(repr(result_value))
+        if stderr_text:
+            parts.append(f"[stderr]\n{stderr_text}")
+        if error_text:
+            parts.append(f"[error]\n{error_text}")
+
+        return "\n".join(parts) if parts else "(no output)"
