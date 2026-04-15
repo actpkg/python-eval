@@ -1,6 +1,8 @@
 wasm := "python-eval.wasm"
 
 act := env("ACT", "npx @actcore/act")
+act-build := env("ACT_BUILD", "npx @actcore/act-build")
+hurl := env("HURL", "npx @orangeopensource/hurl")
 oras := env("ORAS", "oras")
 registry := env("OCI_REGISTRY", "ghcr.io/actpkg")
 port := `npx get-port-cli`
@@ -15,7 +17,7 @@ setup: init
 
 build:
     uv run componentize-py -d wit -w component-world componentize app -o {{wasm}}
-    act-build pack {{wasm}}
+    {{act-build}} pack {{wasm}}
 
 test:
     #!/usr/bin/env bash
@@ -23,7 +25,7 @@ test:
     {{act}} run {{wasm}} --http --listen "{{addr}}" &
     trap "kill $!" EXIT
     npx wait-on -t 180s {{baseurl}}/info
-    npx @orangeopensource/hurl --test --variable "baseurl={{baseurl}}" e2e/*.hurl
+    {{hurl}} --test --variable "baseurl={{baseurl}}" e2e/*.hurl
 
 publish:
     #!/usr/bin/env bash
