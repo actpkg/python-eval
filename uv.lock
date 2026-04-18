@@ -4,10 +4,14 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "act-sdk"
-version = "0.2.0"
-source = { git = "https://github.com/actcore/act-sdk-py.git#3cff3f2a6259fe77fec08607731830647a57a2aa" }
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cbor2" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9b/77/9ffa6b3a0ab9b9168386018d75662a8e49287bb278c3e64ed266068bcd74/act_sdk-0.1.1.tar.gz", hash = "sha256:db2f0b290381e8a8fccfd48b0f376193fc323d8a668a2f8a9435548d9140dde9", size = 30294, upload-time = "2026-04-19T12:43:21.953Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d3/9d/3f7994823e1e6f17cb66e455b7e8f00e7731431cc7d32ff63c192ca39409/act_sdk-0.1.1-py3-none-any.whl", hash = "sha256:f2c8521569fa7d2acec7597b8ea19b5c86d749637f3844c98e96c0cd61b88cfb", size = 12516, upload-time = "2026-04-19T12:43:20.563Z" },
 ]
 
 [[package]]
@@ -41,7 +45,7 @@ wheels = [
 
 [[package]]
 name = "python-eval"
-version = "0.1.0"
+version = "0.1.1"
 source = { virtual = "." }
 dependencies = [
     { name = "act-sdk" },
@@ -54,7 +58,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "act-sdk", git = "https://github.com/actcore/act-sdk-py.git" }]
+requires-dist = [{ name = "act-sdk", specifier = ">=0.1.1" }]
 
 [package.metadata.requires-dev]
 dev = [
