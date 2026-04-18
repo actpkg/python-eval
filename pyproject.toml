@@ -1,10 +1,11 @@
 [project]
 name = "python-eval"
-version = "0.1.1"
+version = "0.2.0"
 description = "Python interpreter"
 requires-python = ">=3.14"
 dependencies = [
-    "act-sdk>=0.1.1",
+    "act-sdk",
+    "cbor2<6.0",
 ]
 
 [dependency-groups]
@@ -12,3 +13,6 @@ dev = [
     "componentize-py>=0.21.0",
     "ruff>=0.15.8",
 ]
+
+[tool.uv.sources]
+act-sdk = { path = "../../act-sdk-py" }
