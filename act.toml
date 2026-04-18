@@ -5,3 +5,8 @@ description = "Python interpreter"
 
 
 [std.capabilities."wasi:filesystem"]
+description = "Executes user Python which may touch arbitrary filesystem paths."
+
+[[std.capabilities."wasi:filesystem".allow]]
+path = "**"
+mode = "rw"
