@@ -1,7 +1,7 @@
 [std]
 name = "python-eval"
-version = "0.1.1"
-description = "Python interpreter"
+version = "0.3.0"
+description = "Sandboxed Python interpreter for AI agents (pure stdlib, no C extensions)"
 
 
 [std.capabilities."wasi:filesystem"]
