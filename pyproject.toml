@@ -1,10 +1,10 @@
 [project]
 name = "python-eval"
-version = "0.3.0"
+version = "0.3.1"
 description = "Sandboxed Python interpreter for AI agents (pure stdlib, no C extensions)"
 requires-python = ">=3.14"
 dependencies = [
-    "act-sdk>=0.2.0",
+    "act-sdk>=0.4.0",
     # Defense-in-depth pin; act-sdk also pins this. cbor2 6.0 is a Rust
     # C-extension that doesn't load inside componentize-py wasm.
     "cbor2>=5.9.0,<6",

@@ -4,14 +4,14 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "act-sdk"
-version = "0.2.0"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cbor2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e4/1b/287a90165ccc5d21cd5c8c114106c0947a9a87177b8d030593234f1441a6/act_sdk-0.2.0.tar.gz", hash = "sha256:284a8e146b5f7bbc9c2f2d67f18c3cc366c02c759db211898772b969a02b8518", size = 30513, upload-time = "2026-04-29T16:43:16.334Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/19/405d83b242d558b9100f479f7bd1e166fcdcab9c041b4e721a285199cef8/act_sdk-0.4.0.tar.gz", hash = "sha256:abf31bfe1974456b321c25243e0cbfcb2ad4ccde6c48d33d0a8252729882158a", size = 33922, upload-time = "2026-06-25T21:22:43.454Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/b2/37a3dfcd04a4f6cf8e54b1df8c4452c13311da92d14bf9434295dece27df/act_sdk-0.2.0-py3-none-any.whl", hash = "sha256:5294443e3b3c7c0ea3e6f1408f4b28b528b5f760ee8c271fd9713adfea77f9eb", size = 12685, upload-time = "2026-04-29T16:43:15.045Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/95/7ddd3d7a3abbd4cd897991629d05d744c6d24eaaab111bb5c3aa4ec0d757/act_sdk-0.4.0-py3-none-any.whl", hash = "sha256:4fcc8d926af65f6a6aeb6ebb7baa5decc7c27d10e4e37e072f1ee8b1135d72c5", size = 14504, upload-time = "2026-06-25T21:22:42.403Z" },
 ]
 
 [[package]]
@@ -45,7 +45,7 @@ wheels = [
 
 [[package]]
 name = "python-eval"
-version = "0.3.0"
+version = "0.3.1"
 source = { virtual = "." }
 dependencies = [
     { name = "act-sdk" },
@@ -60,7 +60,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "act-sdk", specifier = ">=0.2.0" },
+    { name = "act-sdk", specifier = ">=0.4.0" },
     { name = "cbor2", specifier = ">=5.9.0,<6" },
 ]
 
