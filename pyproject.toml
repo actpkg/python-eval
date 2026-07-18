@@ -1,6 +1,6 @@
 [project]
 name = "python-eval"
-version = "0.3.1"
+version = "0.3.2"
 description = "Sandboxed Python interpreter for AI agents (pure stdlib, no C extensions)"
 requires-python = ">=3.14"
 dependencies = [
