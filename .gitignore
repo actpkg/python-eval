@@ -2,3 +2,5 @@
 __pycache__/
 wit/deps/
 .venv/
+.pytest_cache/
+.pytest-act-stderr.log

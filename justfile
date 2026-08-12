@@ -3,13 +3,7 @@ wasm := "python-eval.wasm"
 act := env("ACT", "npx @actcore/act")
 actbuild := env("ACT_BUILD", "npx @actcore/act-build")
 act-build := env("ACT_BUILD", "npx @actcore/act-build")
-hurl := env("HURL", "hurl")
 registry := env("OCI_REGISTRY", "actpkg.dev/library")
-# Random port for the e2e server, in a safe range: above the well-known/common
-# dev ports and below the Linux outbound ephemeral range (32768+).
-port := `shuf -i 10000-29999 -n 1`
-addr := "[::1]:" + port
-baseurl := "http://" + addr
 
 # Fetch WIT deps from the registry (ghcr.io/actcore) into wit/deps/.
 # wkg-registry.toml maps the act namespace -> actcore.dev (well-known -> ghcr.io/actcore).
@@ -24,12 +18,7 @@ build:
     {{act-build}} pack {{wasm}}
 
 test:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    {{act}} run {{wasm}} --http --listen "{{addr}}" &
-    trap "kill $!" EXIT
-    curl --retry 60 --retry-connrefused --retry-delay 1 -fsS -o /dev/null {{baseurl}}/info
-    {{hurl}} --test --variable "baseurl={{baseurl}}" e2e/*.hurl
+    ACT="{{act}}" uv run --project e2e pytest e2e/ -v
 
 publish:
     #!/usr/bin/env bash
