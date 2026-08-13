@@ -17,8 +17,8 @@ build:
     uv run componentize-py -d wit -w component-world componentize app -o {{wasm}}
     {{act-build}} pack {{wasm}}
 
-test:
-    ACT="{{act}}" uv run --project e2e pytest e2e/ -v
+test: build
+    cd e2e && ACT="{{act}}" WASM="../{{wasm}}" cargo test
 
 publish:
     #!/usr/bin/env bash

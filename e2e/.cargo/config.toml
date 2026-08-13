@@ -1,0 +1,11 @@
+# This crate is host-only test code: it spawns `act` over tokio's process
+# support, which does not exist on wasm. The component root carries no
+# .cargo/config.toml (componentize-py does the guest build), but the pin is
+# kept anyway so a bare `cargo test` in e2e/ always builds for the host,
+# whatever the parent tree defaults to.
+[build]
+target = "x86_64-unknown-linux-gnu"
+
+# One shared build-dir machine-wide (~/.cargo/config.toml redirects it) collides
+# same-name crates; pin this crate to its own target/ (relative = crate dir).
+build-dir = "target"
